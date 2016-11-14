@@ -1,0 +1,33 @@
+var options = {
+  host: 'www.yoururl.com',
+  port: 80,
+  path: '/status',
+  method: 'GET'
+};
+
+var req = http.request(options, function(res) {
+  console.log('STATUS: ' + res.statusCode);
+  var response = JSON.parse(res);
+  if( response.key == "mem-used-pct" )
+  {
+     if(parseInt(response.value) > 95 )
+      sendAlertService("HighMemUsage");
+  }
+
+  if( response.key == "cpu-used-pct" )
+  {
+     if(parseInt(response.value) > 97 )
+      sendAlertService("HighCPUUsage");
+  }
+  
+  if( response.key == "disc-space-avail")
+  {
+     diskSpaceArray = response.value;
+     if( diskSpaceArray.key == "availBytes" )
+        if (diskSpaceArray.value < 1000) 
+             sendAlertService("LowDiskSpace");  
+  }
+
+};
+
+
